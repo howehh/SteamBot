@@ -6,7 +6,8 @@ This program will log onto your steam account and spam a desired user with messa
 # Use responsibly, this is intended to ward off annoying friends who won't stop messaging you
 
 1. Install node.js
-2. Edit config.json with steam account name, password, the pastebin containing all the messages, and the steam ID of the user to spam
-3. Run the bot with `node index.js`
+2. `npm install` to install node modules
+3. Edit config.json with steam account name, password, the pastebin containing all the messages, and the steam ID of the user to spam
+4. Run the bot with `node index.js`
 
 To update the bot with more messages, update the pastebin and restart bot.
