@@ -18,17 +18,18 @@ client.on('loggedOn', function() {
 
 // Gets a list of image links from raw pastebin (label array as "links")
 let arrIndex = 0;
-const imgArray = [];
 
-axios.get("https://pastebin.com/raw/" + config.pastebin).then(function(response) {
-   imgArray.push.apply(imgArray, response.data.links);
-});
+function sendMessage() {
+   axios.get("https://pastebin.com/raw/" + config.pastebin).then(function(response) {
+      client.chatMessage(config.targetID, response.data.links[arrIndex]);
+      if (++arrIndex === response.data.links.length) arrIndex = 0;
+   });
+}
 
 // Interval to spam the target ID 
 setInterval(function() {
-   client.chatMessage(config.targetID, imgArray[arrIndex]);
-   if (++arrIndex === imgArray.length) arrIndex = 0;
-}, 120000);
+   sendMessage();
+}, 60000);
 
 // Logs a user's message to console
 client.on("friendMessage", function(steamID, message) {
