@@ -1,37 +1,13 @@
 // Imports
-const SteamUser = require('steam-user');
-const config = require('./config');
-const axios = require('axios');
 const spammer = require('./lib/spammer');
-
-const client = new SteamUser();
-
-// Logs into steam
-client.logOn({
-   accountName: config.username,
-   password: config.password
-});
+const bot = require('./lib/bot');
+const autoReply = require('./lib/autoreply');
 
 // Login message when successfully logged in
-client.on('loggedOn', function() {
+bot.client.on('loggedOn', function() {
    console.log("Login successful");
    startProcess();
 });
-
-// Logs a user's message to console
-client.on("friendMessage", function(steamID, message) {
-   console.log("[" + getFormattedDate() + "] ID: " + steamID + ": " + message);
-});
-
-function getFormattedDate() {
-   let date = new Date();
-   let minutes = (date.getMinutes() < 10) ? date.getMinutes() + "0" : date.getMinutes();
-   let seconds = (date.getSeconds() < 10) ? date.getSeconds() + "0" : date.getSeconds();
-   let str = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() +
-         " " +  date.getHours() + ":" + minutes + ":" + seconds;
-
-   return str;
-}
 
 // Run a module based on command line args
 function startProcess() {
@@ -41,12 +17,23 @@ function startProcess() {
          const pastebinID = process.argv[4];
          const seconds = process.argv[5];
          if (userID !== undefined && pastebinID !== undefined && seconds !== undefined) {
-            spammer.startSpam(client, userID, pastebinID, seconds);
+            spammer.startSpam(userID, pastebinID, seconds);
          } else {
             console.log("Usage: node index.js spam [steamID] [pastebin ID] [spam interval]");
+            process.exit(1);
+         }
+         break;
+      case "autoreply":
+         if (process.argv[3] !== undefined) {
+            autoReply.setAutoReplyMsg(process.argv[3]);
+            autoReply.startAutoReply();
+         } else {
+            console.log("Usage: node index.js autoreply [message with underscore separators]");
+            process.exit(1);
          }
          break;
       default:
          console.log("Usage: node index.js [arg 1] [arg 2] ... [arg n]\n");
+         process.exit(1);
    }
 }
